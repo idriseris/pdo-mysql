@@ -59,7 +59,7 @@ class MySQL {
         return self::query("SELECT * FROM $table".self::where($where))->rowCount();
     }
     public static function fetch($table,$where=array()){
-        return self::query("SELECT * FROM $table".self::where($where))->fetch(PDO::FETCH_ASSOC);
+        return (object)self::query("SELECT * FROM $table".self::where($where))->fetch(PDO::FETCH_ASSOC);
     }
     public static function where($array){
         $where_array = array();
@@ -71,6 +71,33 @@ class MySQL {
         if(count($where_array)){
             return " WHERE ".implode(' AND ', $where_array);
         }
+    }
+    public static function info(){
+        $result = array();
+        $data = self::query("SHOW VARIABLES");
+        $con = $data->fetchAll(PDO::FETCH_ASSOC);
+        foreach($con as $item){
+            $result[$item[Variable_name]]=$item[Value];
+        }
+        return (object)$result;
+    }
+    public static function getTables(){
+        $result = array();
+        $data = self::query("SHOW TABLES");
+        $arra = $data->fetchAll(PDO::FETCH_ASSOC);
+        foreach($arra as $item){
+            array_push($result,implode("", $item));
+        }
+        return $result;
+    }
+    public static function getTableView($table){
+        $result = array();
+        $data = self::query("DESCRIBE $table");
+        $arra = $data->fetchAll(PDO::FETCH_ASSOC);
+        foreach($arra as $item){
+            $result[$item[Field]]=(object)$item;
+        }
+        return (object)$result;
     }
     public static function unison($data){
 		$in = array("'");

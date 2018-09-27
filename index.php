@@ -1,7 +1,6 @@
 <?PHP
 include("config.php");
 
-
 // Ekleme
 MySQL::add("tablo",array(
     name => "Ad",
@@ -45,5 +44,29 @@ $result = MySQL::fetch("tablo",array(
 ));
 print_r($result);
 echo "<br />";
+
+
+
+// Veritabanı hakkında
+$info = MySQL::info();
+// Version
+echo $info->version;
+// Full
+print_r($info);
+
+
+
+
+// Tablo Listesi
+$table = MySQL::getTables();
+echo "<pre>";
+print_r($table);
+
+
+// Tablo Özellikleri
+$table = MySQL::getTableView("tablo1");
+echo "<pre>";
+print_r($table);
+
 
 ?>
